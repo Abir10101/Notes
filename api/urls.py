@@ -4,12 +4,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
 	path( 'notes/', views.NoteView.as_view() ),
-	path( 'notes/<int:pk>', views.NoteView.as_view() ),
+	path( 'notes/<int:pk>/', views.NoteView.as_view() ),
 
 	path( 'routes/', views.GetRoutes.as_view() ),
-]
-
-# Redirect Routes
-urlpatterns += [
-	path( '', RedirectView.as_view( url="notes/", permanent=True ) )		
 ]
