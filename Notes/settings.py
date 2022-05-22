@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", 'c@^%&+bm93*6h)ee44ewp(nyb6p9t(
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG", 'True')
+DEBUG = os.environ.get('DEBUG', '0') == '1'
 
 ALLOWED_HOSTS = ['simplenotes101.herokuapp.com', 'localhost', '127.0.0.1']
 
