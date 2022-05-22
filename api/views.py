@@ -1,90 +1,65 @@
-from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Note
+from rest_framework.views import APIView
 from .serialize import NoteSerializer
+from .models import Note
 
 
-@api_view( ['GET'] )
-def getRoutes( request ):
-	routes = [
-        {
-            'Endpoint': '/notes/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of notes'
-        },
-        {
-            'Endpoint': '/notes/id/view',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns a single note object'
-        },
-        {
-            'Endpoint': '/notes/create/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates new note with data sent in post request'
-        },
-        {
-            'Endpoint': '/notes/id/update/',
-            'method': 'PUT',
-            'body': {'body': ""},
-            'description': 'Creates an existing note with data sent in post request'
-        },
-        {
-            'Endpoint': '/notes/id/delete/',
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes and exiting note'
-        },
-    ]
-    
-	return Response( routes )
 
-# List all Notes
-@api_view( ['GET'] )
-def getNotes( request ):    
-    notes = Note.objects.all()
-    serializer = NoteSerializer( notes, many=True )
-    
-    return Response( serializer.data )
+class NoteView( APIView ):
+    def post( self, request ):
+        serializer = NoteSerializer( data=request.data )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response( {"status":"success", "data":serializer.data} )
+        else:
+            return Response( {"status":"error", "data":serializer.errors} )
 
-# View a Note
-@api_view( ['GET'] )
-def getSingleNote( request, pk ):
-    note = Note.objects.get( id=pk )
-    serializer = NoteSerializer( note, many=False )
+    def get( self, request, pk=None ):
+        if pk:
+            note = Note.objects.get( id=pk )
+            serializer = NoteSerializer( note, many=False )
+            return Response( {"status":"success", "data":serializer.data} )
 
-    return Response( serializer.data )
+        notes = Note.objects.all()
+        serializer = NoteSerializer( notes, many=True )
+        return Response( {"status":"success", "data":serializer.data} )
 
-# Create Note
-@api_view( ['POST'] )
-def createNote( request ):
-    data = request.data
-    serializer = NoteSerializer( data=data )
 
-    if serializer.is_valid():
-        serializer.save()
-
-    return Response( serializer.data )
-
-# Update Note
-@api_view( ['PUT'] )
-def updateNote( request, pk ):
-    data = request.data
-    note = Note.objects.get( id=pk )
-    serializer = NoteSerializer( instance=note, data=data )
-
-    if serializer.is_valid():
-        serializer.save()
-
-    return Response( serializer.data )
-
-# Delete Note
-@api_view(['DELETE'])
-def deleteNote( request, pk ):
-    note = Note.objects.get( id=pk )
-    note.delete()
-
-    return Response('Note is deleted!')
+# @api_view( ['GET'] )
+class GetRoutes( APIView ):
+    def get( self, request ):
+        routes = [
+            {
+                'Endpoint': '/notes/',
+                'method': 'GET',
+                'body': None,
+                'description': 'Returns an array of notes'
+            },
+            {
+                'Endpoint': '/notes/id',
+                'method': 'GET',
+                'body': None,
+                'description': 'Returns a single note object'
+            },
+            {
+                'Endpoint': '/notes/',
+                'method': 'POST',
+                'body': {'body': ""},
+                'description': 'Creates new note with data sent in post request'
+            },
+            {
+                'Endpoint': '/notes/id/',
+                'method': 'PUT',
+                'body': {'body': ""},
+                'description': 'Creates an existing note with data sent in post request'
+            },
+            {
+                'Endpoint': '/notes/id/',
+                'method': 'DELETE',
+                'body': None,
+                'description': 'Deletes and exiting note'
+            },
+        ]
+        
+        return Response( routes )
