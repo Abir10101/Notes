@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serialize import NoteSerializer
 from .models import Note
+from django.shortcuts import get_object_or_404
 
 
 
@@ -17,13 +18,28 @@ class NoteView( APIView ):
 
     def get( self, request, pk=None ):
         if pk:
-            note = Note.objects.get( id=pk )
+            note = get_object_or_404( Note, id=pk )
             serializer = NoteSerializer( note, many=False )
             return Response( {"status":"success", "data":serializer.data} )
 
         notes = Note.objects.all()
         serializer = NoteSerializer( notes, many=True )
         return Response( {"status":"success", "data":serializer.data} )
+
+    def patch( self, request, pk=None ):
+        note = get_object_or_404( Note, id=pk )
+        serializer = NoteSerializer( note, data=request.data, partial=True )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response( {"status":"success", "data":serializer.data} )
+        else:
+            return Response( {"status":"error", "data":serializer.errors} )
+
+    def delete( self, request, pk=None ):
+        note = get_object_or_404( Note, id=pk )
+        note.delete()
+        return Response( {"status":"success", "data":"Item Deleted"} )
 
 
 # @api_view( ['GET'] )
