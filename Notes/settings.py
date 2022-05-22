@@ -13,7 +13,7 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('DJANGO_DEBUG'):
-    DEBUG = os.environ.get('DJANGO_DEBUG')
+    DEBUG = False
 else:
     DEBUG = True
 
