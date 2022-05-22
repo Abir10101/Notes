@@ -42,7 +42,6 @@ class NoteView( APIView ):
         return Response( {"status":"success", "data":"Item Deleted"} )
 
 
-# @api_view( ['GET'] )
 class GetRoutes( APIView ):
     def get( self, request ):
         routes = [
