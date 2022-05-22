@@ -5,14 +5,14 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-if os.environ['DJANGO_SECRET_KEY']:
+if os.environ.get('DJANGO_SECRET_KEY'):
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 else:
     SECRET_KEY = 'c@^%&+bm93*6h)ee44ewp(nyb6p9t(beu55)q2qip%g+na-&1a'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ['DJANGO_DEBUG']:
+if os.environ.get('DJANGO_DEBUG'):
     DEBUG = os.environ['DJANGO_DEBUG']
 else:
     DEBUG = True
